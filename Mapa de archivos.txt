@@ -1,0 +1,14 @@
+Mapa de archivos:
+    ranavision_segmentation.pt:         Parametros del modelo guardado para segmentar pantalla
+    ranavision_detection.pt:            Parametros del modelo guardado para detectar los numeros dentro de la pantalla
+    ranavision_csv.ipynb:               Script para validar los pesos recopilados en el analisis fisico
+    ranaset_train_segmentacion.ipynb:   Script de entrenamiento para segmentacion
+    ranaset train_detection.ipynb:      Script de entrenamiento para deteccion
+    ejemplo.ipynb:                      Ejemplo de como usar ranavision
+    boxes.csv:                          Archivo generado en makevision.io con metada de las imagenes de entrenamiento. Sirve en la etapa de entrenamiento.
+    annos.json:                         Idem al anterior, pero con anotaciones.
+    ranavision.py:                      Archivo principal con las funciones necesarias para usar ranavision. Ver uso en el ejemplo.ipynb
+
+Mapa de carpetas:
+    pantalla:                           Imagenes de pantallas usadas para entrenamiento
+    Images:                             Imagenes principales usadas para entrenamiento
