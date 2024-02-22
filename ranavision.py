@@ -16,17 +16,18 @@ def getPantalla(im,model,preprocess,device='cpu'):
         proyy = mask.sum(axis=1)
 
         minx,miny,maxx,maxy = 0,0,0,0
+        thres = 0
         for minx in range(len(proyx)):
-            if proyx[minx]>0:   break
+            if proyx[minx]>thres:   break
 
         for maxx in reversed(range(len(proyx))):
-            if proyx[maxx]>0:   break
+            if proyx[maxx]>thres:   break
         
         for miny in range(len(proyy)):
-            if proyy[miny]>0:   break
+            if proyy[miny]>thres:   break
 
         for maxy in reversed(range(len(proyy))):
-            if proyy[maxy]>0:   break
+            if proyy[maxy]>thres:   break
         
         return (minx,miny,maxx,maxy)
     
@@ -38,9 +39,21 @@ def getPantalla(im,model,preprocess,device='cpu'):
     transformed = torch.unsqueeze(transformed,0).to(device)
     model.eval()
     mask = model(transformed)['out'].cpu().detach().numpy()[0,1]
-    mask = 1*(mask>0.5)
+    mask = 1*(mask>0.2)
+    # mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT,(15,15)))
     im2show = im2show['image'].cpu().detach().numpy()
     im2show = ( 255*np.transpose( im2show, [1,2,0] ) ).astype(np.uint8)
+
+    # Quedarse con el componente mas grande nomas
+    n_comp,components = cv2.connectedComponents(mask.astype(np.uint8))
+    max_label = 0
+    max_area = 0
+    for i in range(1,n_comp):
+        if (components==i).sum() > max_area:
+            max_area = (components==i).sum()
+            max_label = i
+            
+    mask = 1*(components==max_label)
 
     box = getBox(mask)
     return im2show[box[1]:box[3],box[0]:box[2]]
